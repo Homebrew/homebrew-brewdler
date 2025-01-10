@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 require "utils/formatter"
@@ -125,7 +126,7 @@ module Bundle
 
       def recursive_dependencies(current_formulae, formulae_names, top_level: true)
         @checked_formulae_names = [] if top_level
-        dependencies = []
+        dependencies = T.let([], T::Array[Dependency])
 
         formulae_names.each do |name|
           next if @checked_formulae_names.include?(name)

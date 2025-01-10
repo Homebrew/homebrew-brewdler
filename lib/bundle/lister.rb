@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 module Bundle
@@ -10,7 +11,7 @@ module Bundle
       end
     end
 
-    def self.show?(type, brews:, casks:, taps:, mas:, whalebrew:, vscode:)
+    def show?(type, brews:, casks:, taps:, mas:, whalebrew:, vscode:)
       return true if brews && type == :brew
       return true if casks && type == :cask
       return true if taps && type == :tap

@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 require "English"
@@ -8,7 +9,7 @@ module Bundle
       return super cmd, *args if verbose
 
       logs = []
-      success = nil
+      success = T.let(nil, T.nilable(T::Boolean))
       IO.popen([cmd, *args], err: [:child, :out]) do |pipe|
         while (buf = pipe.gets)
           logs << buf
@@ -66,7 +67,7 @@ module Bundle
         Process::Sys.seteuid(uid)
       end
 
-      return_value = with_env("HOME" => Etc.getpwuid(Process.uid).dir, &block)
+      return_value = with_env("HOME" => Etc.getpwuid(Process.uid)&.dir, &block)
 
       if process_reexchangeable
         Process::UID.re_exchange

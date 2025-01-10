@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 module Bundle
@@ -37,6 +38,7 @@ module Bundle
           Bundle::TapInstaller
         end
 
+        next if cls.nil?
         next if Bundle::Skipper.skip? entry
 
         preinstall = if cls.preinstall(*args, **options, no_upgrade:, verbose:)
