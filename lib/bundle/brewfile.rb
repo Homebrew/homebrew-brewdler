@@ -7,6 +7,7 @@ module Bundle
     def path(dash_writes_to_stdout: false, global: false, file: nil)
       env_bundle_file_global = ENV.fetch("HOMEBREW_BUNDLE_FILE_GLOBAL", nil)
       env_bundle_file = ENV.fetch("HOMEBREW_BUNDLE_FILE", nil)
+      user_config_home = ENV.fetch("HOMEBREW_USER_CONFIG_HOME", nil)
 
       filename = if global
         if env_bundle_file_global.present?
@@ -14,8 +15,12 @@ module Bundle
         else
           raise "'HOMEBREW_BUNDLE_FILE' cannot be specified with '--global'" if env_bundle_file.present?
 
-          Bundle.exchange_uid_if_needed! do
-            "#{Dir.home}/.Brewfile"
+          if user_config_home && File.exist?("#{user_config_home}/Brewfile")
+            "#{user_config_home}/Brewfile"
+          else
+            Bundle.exchange_uid_if_needed! do
+              "#{Dir.home}/.Brewfile"
+            end
           end
         end
       elsif file.present?
