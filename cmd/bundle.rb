@@ -95,6 +95,12 @@ module Homebrew
                env:         :bundle_dump_no_vscode,
                description: "`dump` without VSCode extensions. " \
                             "This is enabled by default if `HOMEBREW_BUNDLE_DUMP_NO_VSCODE` is set."
+        switch "--vscodium",
+              description: "`list` or `dump` VSCodium extensions."
+        switch "--no-vscodium",
+              env:         :bundle_dump_no_vscodium,
+              description: "`dump` without VSCodium extensions. " \
+                            "This is enabled by default if `HOMEBREW_BUNDLE_DUMP_NO_VSCODIUM` is set."
         switch "--describe",
                env:         :bundle_dump_describe,
                description: "`dump` adds a description comment above each line, unless the " \
@@ -106,7 +112,9 @@ module Homebrew
                description: "`cleanup` casks using the `zap` command instead of `uninstall`."
 
         conflicts "--all", "--no-vscode"
+        conflicts "--all", "--no-vscodium"
         conflicts "--vscode", "--no-vscode"
+        conflicts "--vscodium", "--no-vscodium"
 
         named_args %w[install dump cleanup check exec list]
       end
@@ -129,7 +137,7 @@ module Homebrew
         force = args.force?
         zap = args.zap?
 
-        no_type_args = !args.brews? && !args.casks? && !args.taps? && !args.mas? && !args.whalebrew? && !args.vscode?
+        no_type_args = !args.brews? && !args.casks? && !args.taps? && !args.mas? && !args.whalebrew? && !args.vscode? && !args.vscodium?
 
         case subcommand
         when nil, "install"

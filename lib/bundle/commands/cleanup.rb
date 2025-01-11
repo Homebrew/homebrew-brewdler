@@ -16,6 +16,7 @@ module Bundle
         Bundle::BrewDumper.reset!
         Bundle::TapDumper.reset!
         Bundle::VscodeExtensionDumper.reset!
+        Bundle::VscodiumExtensionDumper.reset!
         Bundle::BrewServices.reset!
       end
 
@@ -26,6 +27,7 @@ module Bundle
         formulae = formulae_to_uninstall(global:, file:)
         taps = taps_to_untap(global:, file:)
         vscode_extensions = vscode_extensions_to_uninstall(global:, file:)
+        vscodium_extensions = vscodium_extensions_to_uninstall(global:, file:)
         if force
           if casks.any?
             args = zap ? ["--zap"] : []
@@ -43,6 +45,10 @@ module Bundle
           Bundle.exchange_uid_if_needed! do
             vscode_extensions.each do |extension|
               Kernel.system "code", "--uninstall-extension", extension
+            end
+
+            vscodium_extensions.each do |extension|
+              Kernel.system "codium", "--uninstall-extension", extension
             end
           end
 
@@ -72,6 +78,12 @@ module Bundle
           if vscode_extensions.any?
             puts "Would uninstall VSCode extensions:"
             puts Formatter.columns vscode_extensions
+            would_uninstall = true
+          end
+
+          if vscodium_extensions.any?
+            puts "Would uninstall VSCodium extensions:"
+            puts Formatter.columns vscodium_extensions
             would_uninstall = true
           end
 
@@ -177,6 +189,19 @@ module Bundle
         return [].freeze if kept_extensions.empty?
 
         current_extensions = Bundle::VscodeExtensionDumper.extensions
+        current_extensions - kept_extensions
+      end
+
+      def vscodium_extensions_to_uninstall(global: false, file: nil)
+        @dsl ||= Brewfile.read(global:, file:)
+        kept_extensions = @dsl.entries.select { |e| e.type == :vscodium }.map { |x| x.name.downcase }
+
+        # To provide a graceful migration from `Brewfile`s that don't yet or
+        # don't want to use `vscodium`: don't remove any extensions if we don't
+        # find any in the `Brewfile`.
+        return [].freeze if kept_extensions.empty?
+
+        current_extensions = Bundle::VscodiumExtensionDumper.extensions
         current_extensions - kept_extensions
       end
 

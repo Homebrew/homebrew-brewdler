@@ -5,7 +5,7 @@ require "spec_helper"
 describe Bundle::Commands::Dump do
   subject(:dump) do
     described_class.run(global:, file: nil, describe: false, force:, no_restart: false, taps: true, brews: true,
-                        casks: true, mas: true, whalebrew: true, vscode: true)
+                        casks: true, mas: true, whalebrew: true, vscode: true, vscodium: true)
   end
 
   let(:force) { false }

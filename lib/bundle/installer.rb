@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+1# frozen_string_literal: true
 
 module Bundle
   module Installer
@@ -31,6 +31,8 @@ module Bundle
           Bundle::WhalebrewInstaller
         when :vscode
           Bundle::VscodeExtensionInstaller
+        when :vscodium
+          Bundle::VscodiumExtensionInstaller
         when :tap
           verb = "Tapping"
           options = entry.options

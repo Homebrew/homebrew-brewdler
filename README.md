@@ -14,6 +14,8 @@ Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, W
 
 [Visual Studio Code](https://code.visualstudio.com/) is optional and used for installing Visual Studio Code extensions.
 
+[VSCodium](https://vscodium.com/) is optional and used for installing VSCodium extensions.
+
 ## Installation
 
 `brew bundle` is automatically installed when first run.
@@ -69,6 +71,9 @@ whalebrew "whalebrew/wget"
 
 # 'vscode --install-extension'
 vscode "GitHub.codespaces"
+
+# 'codium --install-extension'
+vscodium "GitHub.codespaces"
 ```
 
 ## Versions and lockfiles
@@ -78,7 +83,7 @@ If your software needs specific pinned versions, consider [`whalebrew`](https://
 
 ## New Installers/Checkers/Dumpers
 
-`brew bundle` currently supports Homebrew, Homebrew Cask, Mac App Store, Whalebrew and Visual Studio Code.
+`brew bundle` currently supports Homebrew, Homebrew Cask, Mac App Store, Whalebrew, Visual Studio Code, and VSCodium.
 
 We are interested in contributions for other installers/checkers/dumpers but they must:
 

@@ -24,6 +24,7 @@ describe Bundle::Dsl do
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
         vscode 'GitHub.codespaces'
+        vscodium 'GitHub.codespaces'
       EOS
     end
 

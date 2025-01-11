@@ -10,13 +10,14 @@ describe Bundle::Dumper do
     ENV["HOMEBREW_BUNDLE_FILE"] = ""
 
     allow(Bundle).to receive_messages(cask_installed?: true, mas_installed?: false, whalebrew_installed?: false,
-                                      vscode_installed?: false)
+                                      vscode_installed?: false, vscodium_installed?: false)
     Bundle::BrewDumper.reset!
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!
     Bundle::MacAppStoreDumper.reset!
     Bundle::WhalebrewDumper.reset!
     Bundle::VscodeExtensionDumper.reset!
+    Bundle::VscodiumExtensionDumper.reset!
     Bundle::BrewServices.reset!
 
     chrome     = instance_double(Cask::Cask,
@@ -38,7 +39,7 @@ describe Bundle::Dumper do
   it "generates output" do
     expect(dumper.build_brewfile(
              describe: false, no_restart: false, brews: true, taps: true, casks: true, mas: true,
-             whalebrew: true, vscode: true
+             whalebrew: true, vscode: true, vscodium: true
            )).to eql("cask \"google-chrome\"\ncask \"java\"\ncask \"iterm2-beta\"\n")
   end
 

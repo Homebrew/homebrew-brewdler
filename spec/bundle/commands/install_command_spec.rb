@@ -23,6 +23,7 @@ describe Bundle::Commands::Install do
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
         vscode 'GitHub.codespaces'
+        vscodium 'GitHub.codespaces'
       EOS
     end
 
@@ -30,6 +31,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::VscodiumExtensionInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::CaskInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
@@ -41,6 +43,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::VscodiumExtensionInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::CaskInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
@@ -65,6 +68,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive_messages(preinstall: true, install: false)
       allow(Bundle::WhalebrewInstaller).to receive_messages(preinstall: true, install: false)
       allow(Bundle::VscodeExtensionInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::VscodiumExtensionInstaller).to receive_messages(preinstall: true, install: false)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
       expect { described_class.run }.to raise_error(SystemExit)
@@ -77,6 +81,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::WhalebrewInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::VscodeExtensionInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::VscodiumExtensionInstaller).to receive_messages(preinstall: true, install: true)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
       expect(Bundle).not_to receive(:system)

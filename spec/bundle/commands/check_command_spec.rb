@@ -261,6 +261,14 @@ describe Bundle::Commands::Check do
         receive(:exit_early_check).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
+
+    it "stops checking after the first VSCodium extension" do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("vscodium 'abc'\nvscodium 'def'")
+
+      expect_any_instance_of(Bundle::Checker::VscodiumExtensionChecker).to \
+        receive(:exit_early_check).once.and_call_original
+      expect { do_check }.to raise_error(SystemExit)
+    end
   end
 
   context "when a new checker fails to implement installed_and_up_to_date" do

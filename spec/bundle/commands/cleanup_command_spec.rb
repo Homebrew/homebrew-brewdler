@@ -22,6 +22,7 @@ describe Bundle::Commands::Cleanup do
         brew 'hasbuilddependency2'
         mas 'appstoreapp1', id: 1
         vscode 'VsCodeExtension1'
+        vscodium 'VsCodiumExtension1'
       EOS
     end
 
@@ -87,15 +88,26 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z vscodeextension1])
       expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
     end
+
+    it "computes which VSCodium extensions to uninstall" do
+      allow(Bundle::VscodiumExtensionDumper).to receive(:extensions).and_return(%w[z])
+      expect(described_class.vscodium_extensions_to_uninstall).to eql(%w[z])
+    end
+
+    it "computes which VSCodium extensions to uninstall irrespective of case of the extension name" do
+      allow(Bundle::VscodiumExtensionDumper).to receive(:extensions).and_return(%w[z vscodiumextension1])
+      expect(described_class.vscodium_extensions_to_uninstall).to eql(%w[z])
+    end
   end
 
   context "when there are no formulae to uninstall and no taps to untap" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             [],
-                                                 formulae_to_uninstall:          [],
-                                                 taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+      allow(described_class).to receive_messages(casks_to_uninstall:               [],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     it "does nothing" do
@@ -108,10 +120,11 @@ describe Bundle::Commands::Cleanup do
   context "when there are casks to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
-                                                 formulae_to_uninstall:          [],
-                                                 taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+      allow(described_class).to receive_messages(casks_to_uninstall:               %w[a b],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     it "uninstalls casks" do
@@ -124,10 +137,11 @@ describe Bundle::Commands::Cleanup do
   context "when there are casks to zap" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
-                                                 formulae_to_uninstall:          [],
-                                                 taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+      allow(described_class).to receive_messages(casks_to_uninstall:               %w[a b],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     it "uninstalls casks" do
@@ -140,10 +154,11 @@ describe Bundle::Commands::Cleanup do
   context "when there are formulae to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             [],
-                                                 formulae_to_uninstall:          %w[a b],
-                                                 taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+      allow(described_class).to receive_messages(casks_to_uninstall:               [],
+                                                 formulae_to_uninstall:            %w[a b],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     it "uninstalls formulae" do
@@ -156,10 +171,11 @@ describe Bundle::Commands::Cleanup do
   context "when there are taps to untap" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             [],
-                                                 formulae_to_uninstall:          [],
-                                                 taps_to_untap:                  %w[a b],
-                                                 vscode_extensions_to_uninstall: [])
+      allow(described_class).to receive_messages(casks_to_uninstall:               [],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    %w[a b],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     it "untaps taps" do
@@ -172,10 +188,11 @@ describe Bundle::Commands::Cleanup do
   context "when there are VSCode extensions to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             [],
-                                                 formulae_to_uninstall:          [],
-                                                 taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: %w[GitHub.codespaces])
+      allow(described_class).to receive_messages(casks_to_uninstall:               [],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   %w[GitHub.codespaces],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     it "uninstalls extensions" do
@@ -185,33 +202,52 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
+  context "when there are VSCodium extensions to uninstall" do
+    before do
+      described_class.reset!
+      allow(described_class).to receive_messages(casks_to_uninstall:               [],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: %w[GitHub.codespaces])
+    end
+
+    it "uninstalls extensions" do
+      expect(Kernel).to receive(:system).with("codium", "--uninstall-extension", "GitHub.codespaces")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
+      described_class.run(force: true)
+    end
+  end
+
   context "when there are casks and formulae to uninstall and taps to untap but without passing `--force`" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
-                                                 formulae_to_uninstall:          %w[a b],
-                                                 taps_to_untap:                  %w[a b],
-                                                 vscode_extensions_to_uninstall: %w[a b])
+      allow(described_class).to receive_messages(casks_to_uninstall:               %w[a b],
+                                                 formulae_to_uninstall:            %w[a b],
+                                                 taps_to_untap:                    %w[a b],
+                                                 vscode_extensions_to_uninstall:   %w[a b],
+                                                 vscodium_extensions_to_uninstall: %w[a b])
     end
 
     it "lists casks, formulae and taps" do
-      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(4).times
+      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(5).times
       expect(Kernel).not_to receive(:system)
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect do
         described_class.run
       end.to raise_error(SystemExit)
-        .and output(/Would uninstall formulae:.*Would untap:.*Would uninstall VSCode extensions:/m).to_stdout
+        .and output(/Would uninstall formulae:.*Would untap:.*Would uninstall VSCode extensions:.*Would uninstall VSCodium extensions:/m).to_stdout
     end
   end
 
   context "when there is brew cleanup output" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:             [],
-                                                 formulae_to_uninstall:          [],
-                                                 taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+      allow(described_class).to receive_messages(casks_to_uninstall:               [],
+                                                 formulae_to_uninstall:            [],
+                                                 taps_to_untap:                    [],
+                                                 vscode_extensions_to_uninstall:   [],
+                                                 vscodium_extensions_to_uninstall: [])
     end
 
     def sane?

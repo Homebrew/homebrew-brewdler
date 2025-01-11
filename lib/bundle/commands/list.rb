@@ -5,11 +5,11 @@ module Bundle
     module List
       module_function
 
-      def run(global:, file:, brews:, casks:, taps:, mas:, whalebrew:, vscode:)
+      def run(global:, file:, brews:, casks:, taps:, mas:, whalebrew:, vscode:, vscodium:)
         parsed_entries = Brewfile.read(global:, file:).entries
         Bundle::Lister.list(
           parsed_entries,
-          brews:, casks:, taps:, mas:, whalebrew:, vscode:,
+          brews:, casks:, taps:, mas:, whalebrew:, vscode:, vscodium:,
         )
       end
     end

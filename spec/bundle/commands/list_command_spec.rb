@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Bundle::Commands::List do
-  subject(:list) { described_class.run(global: false, file: nil, brews:, casks:, taps:, mas:, whalebrew:, vscode:) }
+  subject(:list) { described_class.run(global: false, file: nil, brews:, casks:, taps:, mas:, whalebrew:, vscode:, vscodium:) }
 
   let(:brews) { true }
   let(:casks) { false }
@@ -11,6 +11,7 @@ describe Bundle::Commands::List do
   let(:mas) { false }
   let(:whalebrew) { false }
   let(:vscode) { false }
+  let(:vscodium) { false }
 
   before do
     allow_any_instance_of(IO).to receive(:puts)
@@ -26,6 +27,7 @@ describe Bundle::Commands::List do
           mas '1Password', id: 443987910
           whalebrew 'whalebrew/imagemagick'
           vscode 'shopify.ruby-lsp'
+          vscodium 'shopify.ruby-lsp'
         EOS
       )
     end
@@ -42,6 +44,7 @@ describe Bundle::Commands::List do
         mas:       "1Password",
         whalebrew: "whalebrew/imagemagick",
         vscode:    "shopify.ruby-lsp",
+        vscodium:  "shopify.ruby-lsp",
       }
 
       combinations = 1.upto(types_and_deps.length).flat_map do |i|
@@ -61,6 +64,7 @@ describe Bundle::Commands::List do
           let(:mas) { args_hash[:mas] }
           let(:whalebrew) { args_hash[:whalebrew] }
           let(:vscode) { args_hash[:vscode] }
+          let(:vscodium) { args_hash[:vscodium] }
 
           it "shows only #{words}" do
             expected = options_list.map { |opt| types_and_deps[opt] }.join("\n")
